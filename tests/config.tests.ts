@@ -35,17 +35,16 @@ test('Dark Sites list', async () => {
     const file = await readConfig('dark-sites.config');
     const sites = parseArray(file);
 
-    // is not empty
-    expect(sites.length).toBeGreaterThan(0);
+    if(sites.length > 0){ 
+      // url patterns should have no protocol
+      expect(sites.every(isURLPatternValid)).toBe(true);
 
-    // url patterns should have no protocol
-    expect(sites.every(isURLPatternValid)).toBe(true);
+      // sites are sorted alphabetically
+      expect(sites).toEqual(sites.slice().sort(compareURLPatterns));
 
-    // sites are sorted alphabetically
-    expect(sites).toEqual(sites.slice().sort(compareURLPatterns));
-
-    // sites are properly formatted
-    expect(throwIfDifferent(file, formatArray(sites), 'Dark Sites list format error')).not.toThrow();
+      // sites are properly formatted
+      expect(throwIfDifferent(file, formatArray(sites), 'Dark Sites list format error')).not.toThrow();
+    }
 });
 
 test('Dynamic Theme Fixes config', async () => {
